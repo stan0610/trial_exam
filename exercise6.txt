@@ -1,0 +1,29 @@
+Get the sequence for the region from basepair 32889000 to 32891000 of human chromosome 13 in FASTA format. Hardmask and softmask the sequence. How many repeat regions are there in this sequence?
+	$ curl 'http://rest.ensembl.org/sequence/region/human/13:32889000..32891000:1?expand_5prime=60;expand_3prime=60' -H 'Content-type:text/x-fasta'
+	>chromosome:GRCh38:13:32888940:32891060:1
+	
+
+
+Get the Ensembl Gene ID for the human CCR5 (chemokine (CC motif) receptor 5) gene.
+	$ curl 'http://rest.ensembl.org/xrefs/symbol/homo_sapiens/CCR5?' -H 'Content-type:application/json'
+	[{"id":"ENSG00000160791","type":"gene"}]
+
+
+Has an orthologue for this gene been identified in chimpanzee?
+	$ curl 'http://rest.ensembl.org/homology/symbol/human/CCR5?target_species=chimpanzee;type=orthologues;format=condensed' -H 'Content-type:application/json'
+	{"data":[{"id":"ENSG00000160791","homologies":[{"taxonomy_level":"Homininae","protein_id":"ENSPTRP00000025599", "species":"pan_troglodytes","id":"ENSPTRG00000014848","type":"ortholog_one2one", "method_link_type":"ENSEMBL_ORTHOLOGUES"}]}]}	
+
+
+Retrieve the genomic FASTA sequence for ENST00000001146
+	$ curl 'http://rest.ensembl.org/sequence/id/ENST00000001146?type=genomic' -H 'Content-type:text/x-fasta'
+
+
+Return the archived sequence for both ENSG00000002587 and ENSG00000003056
+	$ curl 'http://rest.ensembl.org/sequence/id' -H 'Content-type:application/json' -H 'Accept:application/json' -X POST -d '{ "ids" : ["ENSG00000002587", "ENSG00000003056" ] }'
+
+
+Get a sequence from 250 nucleotides located on human chromosome 7 starting at position 35182
+	$ curl 'https://rest.ensembl.org/sequence/region/human/7:35182..35432:1?' -H 'Content-type:text/plain'
+
+
+
