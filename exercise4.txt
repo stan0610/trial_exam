@@ -1,0 +1,175 @@
+List the names and addresses of all guests in London, alphabetically ordered by name.
+	select guestname, guestaddress from guest where guestaddress like '%London%' order by guestname;
+	+--------------+--------------------+
+	| guestname    | guestaddress       |
+	+--------------+--------------------+
+	| John Kay     | 56 High St, London |
+	| Mike Ritchie | 18 Tain St, London |
+	+--------------+--------------------+
+
+
+List all double or family rooms with a price below £40.00 per night, cheapest first.
+	select roomno, type, price from room where price < 40 AND type =
+	'double' OR type = 'family' order by price;
+	+--------+--------+-------+
+	| roomno | type   | price |
+	+--------+--------+-------+
+	|    801 | double | 15.00 |
+	|    601 | double | 29.00 |
+	|   1001 | double | 30.00 |
+	|   1101 | family | 35.00 |
+	|    701 | family | 39.00 |
+	|   1101 | family | 59.99 |
+	+--------+--------+-------+
+
+
+
+List the bookings for which no date_to has been specified.
+	select * from booking where dateto is NULL;
+	+---------+---------+------------+--------+--------+
+	| hotelno | guestno | datefrom   | dateto | roomno |
+	+---------+---------+------------+--------+--------+
+	| ch01    |   10006 | 2022-04-21 | NULL   |   1101 |
+	| dc01    |   10003 | 2022-05-20 | NULL   |   1001 |
+	| fb01    |   10001 | 2022-05-01 | NULL   |    701 |
+	+---------+---------+------------+--------+--------+
+
+
+
+What is the average price of a room?
+	select avg(price) from room;
+	+------------+
+	| avg(price) |
+	+------------+
+	|  35.748333 |
+	+------------+
+
+
+
+What is the total revenue per night from all double rooms?
+	select sum(price) from room where type = 'double';
+	+------------+
+	| sum(price) |
+	+------------+
+	|     160.00 |
+	+------------+
+
+
+
+How many different guests have made bookings for August?
+	select count(distinct(guestno)) from booking where datefrom like '2022-08
+	%';
+	+--------------------------+
+	| count(distinct(guestno)) |
+	+--------------------------+
+	|                        0 |
+	+--------------------------+
+
+
+
+List the price and type of all rooms at the The Tower Hotel.
+	select price, type, hotelname from room join hotel on hotel.hotelno = room.hotelno where hotelname = 'The Tower Hotel';
+	+-------+--------+-----------------+
+	| price | type   | hotelname       |
+	+-------+--------+-----------------+
+	| 19.00 | single | The Tower Hotel |
+	| 29.00 | double | The Tower Hotel |
+	| 39.00 | family | The Tower Hotel |
+	+-------+--------+-----------------+
+
+
+
+List all guests currently staying at the The Tower Hotel.
+	select guestname, hotelname from guest join booking on booking.guestno=guest.guestno join hotel on booking.hotelno=hotel.hotelno where hotelname='The Tower Hotel';
+	+--------------+-----------------+
+	| guestname    | hotelname       |
+	+--------------+-----------------+
+	| John Kay     | The Tower Hotel |
+	| John Kay     | The Tower Hotel |
+	| Mike Ritchie | The Tower Hotel |
+	| Joe Keogh    | The Tower Hotel |
+	| Carol Farrel | The Tower Hotel |
+	+--------------+-----------------+
+
+
+
+List the details of all rooms at the The Tower Hotel, including the name of the guest staying in the room, if the room is occupied.
+	select room.roomno, hotel.hotelname, room.type, room.price, guest.guestname from room join hotel on hotel.hotelno=room.hotelno join booking on booking.roomno=room.roomno join guest on guest.guestno=booking.guestno where hotelname='The Tower Hotel';
+	+--------+-----------------+--------+-------+--------------+
+	| roomno | hotelname       | type   | price | guestname    |
+	+--------+-----------------+--------+-------+--------------+
+	|    501 | The Tower Hotel | single | 19.00 | John Kay     |
+	|    501 | The Tower Hotel | single | 19.00 | Carol Farrel |
+	|    601 | The Tower Hotel | double | 29.00 | Mike Ritchie |
+	|    601 | The Tower Hotel | double | 29.00 | Joe Keogh    |
+	|    701 | The Tower Hotel | family | 39.00 | John Kay     |
+	+--------+-----------------+--------+-------+--------------+
+
+
+
+What is the total income from bookings for the The Tower Hotel today?
+	select sum(price) from room join booking on booking.roomno=room.roomno join hotel on hotel.hotelno=room.hotelno where hotelname='The Tower Hotel' and datefrom <= '2022-04-01' and dateto > '2022-04-01';
+	+------------+
+	| sum(price) |
+	+------------+
+	|      19.00 |
+	+------------+
+
+
+
+List the rooms that are currently unoccupied at the The Tower Hotel.
+
+
+
+What is the lost income from unoccupied rooms at the The Tower Hotel?
+
+
+
+List the number of rooms in each hotel in London.
+	select count(distinct(roomno)) as "number of rooms", hotelname from room join hotel on hotel.hotelno=room.hotelno where city='London' group by hotelname;
+	+-----------------+-----------------+
+	| number of rooms | hotelname       |
+	+-----------------+-----------------+
+	|               2 | Omni Shoreham   |
+	|               2 | Phoenix Park    |
+	|               3 | The Tower Hotel |
+	+-----------------+-----------------+
+
+
+
+What is the most booked room type for each hotel in London?
+	select roomno, count(*) as "number of room bookings" from booking join hotel on hotel.hotelno=booking.hotelno where city='London' group by roomno;
+	+--------+-------------------------+
+	| roomno | number of room bookings |
+	+--------+-------------------------+
+	|    501 |                       2 |
+	|    601 |                       2 |
+	|    701 |                       1 |
+	|    801 |                       1 |
+	|   1101 |                       1 |
+	+--------+-------------------------+
+
+
+
+Update the price of all rooms by 5%.
+	update room set price = price + (price*5/100);
+	+--------+---------+--------+-------+
+	| roomno | hotelno | type   | price |
+	+--------+---------+--------+-------+
+	|    501 | fb01    | single | 19.95 |
+	|    601 | fb01    | double | 30.45 |
+	|    701 | ch02    | single | 10.50 |
+	|    701 | fb01    | family | 40.95 |
+	|    801 | ch02    | double | 15.75 |
+	|    901 | dc01    | single | 18.90 |
+	|   1001 | ch01    | single | 31.49 |
+	|   1001 | dc01    | double | 31.50 |
+	|   1001 | fb02    | single | 60.90 |
+	|   1101 | ch01    | family | 62.99 |
+	|   1101 | dc01    | family | 36.75 |
+	|   1101 | fb02    | double | 90.30 |
+	+--------+---------+--------+-------+
+
+
+
+
