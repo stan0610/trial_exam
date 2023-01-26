@@ -1,0 +1,26 @@
+exercise 2
+normalization of dental practice DB
+
+
+UNF
+staffNo, dentistName, patientNo, patientName, app(date, time), surgeryNo
+
+
+1NF
+*staffNo*, dentistName, patientNo, patientName, *date*, *time*, surgeryNo
+
+
+2NF
+	(made staff table and appointment table with apptNo to make it more clear)
+	(--> no more partial dependancies)
+info(*staffNo*, patientNo, patientName, *apptNo*, surgeryNo)
+appointment(*apptNo*, date, time)
+staff(*staffNo*, dentistName)
+
+
+3NF
+	(made patient table to remove transitive dependency of name and surgeryNo)
+info(*staffNo*, patientNo, *apptNo*)
+patient(*patientNo*, patientName, surgeryNo)
+appointment(*apptNo*, date, time)
+staff(*staffNo*, dentistName)
